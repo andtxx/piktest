@@ -1,39 +1,29 @@
+<template>
+	<div class="header">
+		<h3 v-if="total">В корзине товаров на {{ total.toFixed(2) }} {{ currency }}</h3>
+		<h3 v-else>В корзине нет товаров</h3>
+	</div>
+</template>
+
 <script>
 export default {
-  name: 'Header',
-  props: {
-    cart: Array,
-    required: true,
-    default: {},
-
-    currency: String,
-  },
-  data() {
-    return {
-      cartPrice: 0,
-    };
-  },
-  watch: {
-    cart(cart) {
-      let val = 0;
-      cart.forEach((item) => {
-        val += item.price * item.amount;
-      });
-      this.cartPrice = val;
-    },
-  },
+	name: 'Header',
+	computed: {
+		total() {
+			return this.$store.state.cartItems.reduce((total, item) => {
+				return (total + item.price * item.quantity)
+			}, 0)
+		},
+		currency() {
+			return this.$store.state.currency
+		},
+	},
 }
 </script>
 
 <style scoped>
-  .header {
-    padding: 10px;
-    background: #e5e5e5;
-  }
+.header {
+	padding: 10px;
+	background: #e5e5e5;
+}
 </style>
-
-<template>
-  <div class="header">
-    <h3>Товаров в корзине на: {{ cartPrice }} {{ currency }}</h3>
-  </div>
-</template>

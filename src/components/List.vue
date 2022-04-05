@@ -1,88 +1,67 @@
 <template>
-  <div class="product-list">
-    <div class="card" v-for="product in products" :style="{width: cardsWidth + '%'}">
-      <p class="card-title">{{ product.title }}</p>
-      <img class="card-image" :src="product.image" alt="">
-      <p class="card-price">Цена: {{ product.price }} {{ currency }}</p>
-
-      <div>
-        <input type="number" ref="amount" :id="product.id">
-        <span>кг</span>
-      </div>
-
-      <button @click="addToCart(product)"> В корзину </button>
+	<div class="product-list-wrap">
+		<div v-if="loading">Loading...</div>
+		<div v-else class="product-list">
+      <Product
+          class="card"
+          v-for="product in products"
+          :key="product.id"
+          :product="product"
+      />
     </div>
-  </div>
+	</div>
 </template>
 
 <script>
+import Product from './Product.vue'
 export default {
-  props: {
-    currency: String,
-  },
-  data() {
-    return {
-      products: [],
-    };
-  },
-  computed: {
-    cardsWidth() {
-      let width = window.innerWidth;
-      let count = 1;
-      if (width > '840px') {
-        count = 3;
-      } else if ((width > '420px' && width < '840px')) {
-        count = 2;
-      }
-
-      return 100 / count;
-    },
-  },
-  methods: {
-    startPricesMonitoring() {
-      setInterval(this.getList, 1000);
-    },
-    async getList() {
-      let data = await this.$store.dispatch('getProductsList');
-
-      this.products = data;
-    },
-    addToCart(product) {
-      let amount = this.$refs.amount.find((input) => input.id === product.id).value;
-
-      let data = {
-        amount,
-        price: product.price,
-        title: product.title,
-      };
-      this.$parent.cart.push(data);
-    },
-  },
-  created() {
-    this.startPricesMonitoring();
-  },
-};
+	name: 'List',
+	components: {
+		Product,
+	},
+	data() {
+		return {
+			loading: true,
+			interval: null,
+		}
+	},
+	async mounted() {
+		await this.$store.dispatch('updateProducts')
+		this.loading = false
+		this.interval = setInterval(() => {
+			this.$store.dispatch('updateProducts')
+		}, 2000)
+	},
+	beforeDestroy() {
+		clearInterval(this.interval)
+	},
+	computed: {
+		products() {
+			return this.$store.state.products
+		},
+	},
+}
 </script>
 
 <style>
+.product-list-wrap {
+	padding: 10px;
+  margin-top: 60px;
+}
+.product-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 40px;
+}
+@media (max-width: 840px) {
   .product-list {
-    padding: 10px;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
   }
-
-  .card {
-    display: inline-block;
-    width: 100%;
-    border: 1px solid #908888;
-    border-radius: 5px;
-    text-align: center;
-    padding: 10px;
+}
+@media (max-width: 420px) {
+  .product-list {
+    grid-template-columns: 1fr;
   }
-  .card-image {
-    width: 100%;
-  }
-  button {
-    padding: 5px;
-    margin: 5px;
-  }
-
+}
 </style>
