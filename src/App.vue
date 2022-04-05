@@ -1,9 +1,9 @@
 <template>
-	<div id="app">
-		<Header />
-		<Cart />
-		<List />
-	</div>
+  <div id="app">
+    <Header/>
+    <Cart/>
+    <List/>
+  </div>
 </template>
 
 <script>
@@ -12,26 +12,26 @@ import List from './components/List.vue'
 import Cart from './components/Cart.vue'
 
 export default {
-	name: 'App',
-	components: {
-		Header,
-		List,
-		Cart,
-	}
+  name: 'App',
+  components: {
+    Header,
+    List,
+    Cart,
+  }
 }
 </script>
 
 <style>
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 #app {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	color: #2c3e50;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
 }
 </style>
