@@ -15,6 +15,11 @@
   </div>
 </template>
 
+<!--
+Для карточки товара нужно создать отдельный компонент
+Даже в этом простом примере появляется какой то хаос
+-->
+
 <script>
 export default {
   props: {
@@ -26,6 +31,7 @@ export default {
     };
   },
   computed: {
+    // Адаптировать верстку через js - чистое безумие, за исключением редких случаев
     cardsWidth() {
       let width = window.innerWidth;
       let count = 1;
@@ -42,11 +48,17 @@ export default {
     startPricesMonitoring() {
       setInterval(this.getList, 1000);
     },
+    // Непонятно зачем вообще использовать vuex в качестве посредника для получения данных
     async getList() {
       let data = await this.$store.dispatch('getProductsList');
 
       this.products = data;
     },
+    // Очень неприятный на вид метод
+    // Карточка должна быть отдельным компонентом, чтобы не искать amount через рефы
+    // Обращаться к методу родительсокго компонента - плохой приём
+    // Этого метода может не быть
+    // Компонент должен полагаться только на себя и на пропсы
     addToCart(product) {
       let amount = this.$refs.amount.find((input) => input.id === product.id).value;
 
@@ -58,6 +70,7 @@ export default {
       this.$parent.cart.push(data);
     },
   },
+  // Интервал неплохо бы удалить при удалении компонента
   created() {
     this.startPricesMonitoring();
   },

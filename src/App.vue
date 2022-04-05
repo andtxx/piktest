@@ -1,3 +1,7 @@
+<!--
+cart и currency стоит перенести в store и не прокидывать пропсами в каждый компонент
+-->
+
 <template>
   <div id="app">
     <Header :cart="cart" :currency="currency"></Header>
